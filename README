@@ -1,0 +1,44 @@
+This repository contains code and documentation for the simDIRECT global 
+optimization algorithm:
+
+simDIRECT.pdf  article on simDIRECT submitted for publication
+simDIRECT.m    Matlab code implementing simDIRECT.  Comments explain usage.
+examples.m     Script with examples of using simDIRECT on test problems.
+
+To cite the paper, for now also use this GitHub website as follows:
+    Donald R. Jones (2022), "On the Natural Extension of the DIRECT 
+    Global Optimization Algorithm to Handle Multiple Objectives,  
+    Nonlinear Constraints, and Missing Data," Available at: 
+    https://github.com/donaldratnerjones/simDIRECT/simDIRECT.pdf
+This README file will be updated with the journal reference once published.
+
+Comments, feedback, and questions on the code can be directed to Don Jones
+at donjon@umich.edu.
+
+IMPORTANT NOTE:
+
+To compute the dominated hypervolume, simDIRECT expects the user
+to have downloaded the open-source code of Fonseca et al that
+computes this quantity.  Instructions for getting this code and
+compiling it into a Matlab MEX file are given below.  If you 
+don't do this, simDIRECT will still run and compute the Pareto set, 
+but it will just report the dominated hypervolume as zero -- which 
+means you won't be able to track progress converging to the Pareto front
+while the optimization is running.
+
+How to get the Hypervolume code for Matlab:
+
+* Go to:  http://lopez-ibanez.eu/hypervolume#download  
+
+* Download the Version 1.3 source code and unzip the tar file.  
+  You should get a directory called hv-1.3-src.
+  Open MATLAB and go to the hv-1.3-src directory.  
+
+* At the MATLAB command prompt, run:  
+  mex -DVARIANT=4 Hypervolume_MEX.c hv.c avl.c
+
+* This should give you a file called
+  Hypervolume_MEX.mexw64 (Windows) or
+  Hypervolume_MEX.mexmaci64 (Mac)
+
+* Put this file on the path when using simDIRECT
