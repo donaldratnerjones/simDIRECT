@@ -9,7 +9,7 @@ To cite the paper, for now also use this GitHub website as follows:
     Donald R. Jones (2022), "On the Natural Extension of the DIRECT 
     Global Optimization Algorithm to Handle Multiple Objectives,  
     Nonlinear Constraints, and Missing Data," Available at: 
-    https://github.com/donaldratnerjones/simDIRECT/simDIRECT.pdf
+    https://github.com/donaldratnerjones/simDIRECT
 This README file will be updated with the journal reference once published.
 
 Comments, feedback, and questions on the code can be directed to Don Jones
