@@ -41,4 +41,4 @@ How to get the Hypervolume code for Matlab:
   Hypervolume_MEX.mexw64 (Windows) or
   Hypervolume_MEX.mexmaci64 (Mac)
 
-* Put this file on the path when using simDIRECT
+* Put this file on the Matlab path when using simDIRECT
