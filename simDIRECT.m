@@ -228,6 +228,13 @@ function output = simDIRECT(fun,con,xl,xu,feps,fu,maxfn)
         if nrec == maxfn
             break;
         end
+
+        % Break out of loop if all rectangles are fathomed
+        
+        if all(fathomed(1:nrec))
+            fprintf('All rectangles are fathomed!\n')
+            break;
+        end
         
         % Update average rates of change of objective and constraints
         
@@ -552,6 +559,14 @@ function selected = process_failed_runs_and_select(nrec,nobj,ncon,f,g,d,...
 % OUTPUT
 %
 %     selected [ns   x    1] indices of selected rectangles (ns=#selected)
+
+    % Set the center-vertex distance for any fathomed rectangle to zero.
+    % As a result, these fathomed rectangles won't be able to dominate any
+    % non-fathomed (positive size) rectangle.   They can't be selected
+    % either because, with feps > 0, they can't beat any "epsilon-improved"
+    % Pareto points -- even if they are one of them.
+
+    d(fathomed) = 0;
 
     % Create "failed" where failed(i)=true if i-th point has NaN values
 
