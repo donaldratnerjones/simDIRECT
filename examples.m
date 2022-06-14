@@ -274,6 +274,7 @@ keyboard
 %**************************************************************************
 % Example 5 
 % Test Problem:     LandH2x2 
+% Characteristics:  2 objectives, 0 constraints, 2 variables
 %**************************************************************************
 
 % Set inputs for the "LandH2x2" test problem
