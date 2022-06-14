@@ -81,7 +81,7 @@ function output = simDIRECT(fun,con,xl,xu,feps,fu,maxfn)
 %
 % VERSION:  
 %
-%        This is version 1.0 (June 2022).  Please direct questions or
+%        This is version 1.1 (June 13, 2022).  Please direct questions or
 %        comments on this software to Don Jones at donjon@umich.edu.
 %
 % IMPORTANT NOTE:
@@ -117,12 +117,12 @@ function output = simDIRECT(fun,con,xl,xu,feps,fu,maxfn)
     
     x = (xl + xu)/2;
     fmid = fun(x);
-    nobj = size(fmid,2);
+    nobj = length(fmid);
     if isempty(con)
         ncon = 0;
     else
         gmid = con(x);
-        ncon = size(gmid,2);
+        ncon = length(gmid);
     end
     nvar = size(xl,2);
 

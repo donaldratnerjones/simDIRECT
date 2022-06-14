@@ -1,6 +1,8 @@
 % This script gives examples of using simDIRECT with single/multiple
 % objectives, and with/without nonlinear constraints.  The test problems 
-% (objectives and constraints) are also in this file, after the examples.
+% (objectives and constraints) are also in this file, after the examples. 
+%
+% Version 1.1 (June 13, 2022).
 
 % Start with a clean slate
 
@@ -219,17 +221,18 @@ keyboard
 
 %**************************************************************************
 % Example 4 
-% Test Problem:     DTLZ2
+% Test Problem:     DTLZ2 with nobj=3, nvar=8, x*=sqrt(0.5)
 % Characteristics:  3 objectives, 0 constraints, 8 variables
 %**************************************************************************
 
 % Set inputs for the "DTLZ2" test problem
+% with nobj=3, nvar=8, x*=sqrt(0.5)
 
-fun   = @(x) dtlz2_3obj_8var_sqrthalf(x);
+fun   = @(x) DTLZ2(x,3,8,sqrt(0.5));
 con   = [];
 xl    = zeros(1,8);
 xu    = ones(1,8);
-feps  = [0.01, 0.01, 0.01];
+feps  = [0.0001, 0.0001, 0.0001];
 fu    = [1.5,  1.5,  1.5];
 maxfn = 5000;
 
@@ -264,8 +267,144 @@ axes.XLim = [0,1.5];
 axes.YLim = [0,1.5];
 axes.ZLim = [0,1.5];
 axes.CameraPosition = [-6.8885   -8.7843   -3.6659];
-title('Pareto Set for DTLZ2 Problem:  Output Space',...
+title('Pareto Set for DTLZ2 Problem (3 obj, 8 var):  Output Space',...
+    'Interpreter','latex','FontSize',18);
+keyboard
+
+%**************************************************************************
+% Example 5 
+% Test Problem:     LandH2x2 
+%**************************************************************************
+
+% Set inputs for the "LandH2x2" test problem
+
+fun   = @(x) LandH2x2(x);
+con   = [];
+xl    = [-0.75, -2.50];
+xu    = [ 0.75,  0.12];
+feps  = [0.0001, 0.0001];
+fu    = [-0.8, -0.8];
+maxfn = 500;
+
+% Optimize with simDIRECT 
+
+output = simDIRECT(fun,con,xl,xu,feps,fu,maxfn);
+
+% Plot Pareto set in output and input space
+
+figure % output space
+color = {'#0072BD','#D95319'};
+xplot = output.f(~output.isPareto,1);
+yplot = output.f(~output.isPareto,2);
+plot(xplot,yplot,'+','Color',color{1},'MarkerSize',10,'LineWidth',1,...
+    'DisplayName','dominated');
+hold on;
+xplot = output.f(output.isPareto,1);
+yplot = output.f(output.isPareto,2);
+plot(xplot,yplot,'o','Color',color{2},'MarkerSize',10,'LineWidth',1,...
+    'DisplayName','nondominated');
+axes = gca;
+axes.XLim = [-2.2, -0.8];
+axes.XTick = -2.2:0.2:-0.8;
+axes.YLim = [-2.2, -0.8];
+axes.YTick = -2.2:0.2:-0.8;
+axes.FontName = 'Times';
+axes.FontSize = 14;
+title('Pareto Set for LandH2x2 Problem:  Output Space',...
     'Interpreter','latex','FontSize',20);
+xlabel('$f_1$','Interpreter','latex', 'FontSize', 20);
+ylabel('$f_2$','Interpreter','latex', 'FontSize', 20, ...
+    'Rotation',0,'HorizontalAlignment','right');
+legend('Interpreter','latex');
+axes.PlotBoxAspectRatio = [ 1,1,1 ];
+
+figure % input space
+xdom    = output.x(~output.isPareto,:);
+xnondom = output.x(output.isPareto,:);
+plot(xdom(:,1),xdom(:,2), '+','MarkerSize',10,'LineWidth',1,...
+    'Color',color{1},'DisplayName','dominated');
+hold on
+plot(xnondom(:,1),xnondom(:,2), 'o','MarkerSize',10,'LineWidth',1,...
+    'Color',color{2},'DisplayName','nondominated');    
+axes = gca;
+axes.FontName = 'Times';
+axes.FontSize = 14;
+title('Pareto Set for SRN Problem:  Input Space',...
+    'Interpreter','latex','FontSize',20);
+axes.XLim = [xl(1),xu(1)];
+axes.YLim = [xl(2),xu(2)];
+xlabel('$x_1$','Interpreter','latex', 'FontSize', 20);
+ylabel('$x_2$','Interpreter','latex', 'FontSize', 20,'Rotation',0,...
+    'HorizontalAlignment','right');
+legend('Interpreter','latex','FontSize',14);
+axes.PlotBoxAspectRatio = [ 1,1,1 ];
+title('Pareto Set for LandH2x2 Problem:  Input Space',...
+    'Interpreter','latex','FontSize',20);
+keyboard
+
+
+%**************************************************************************
+% Example 6 
+% Test Problem:     DTLZ2 with nobj=2, nvar=10, x*=sqrt(0.5)
+% Characteristics:  2 objectives, 0 constraints, 10 variables
+%**************************************************************************
+
+% Set inputs for the "DTLZ2" test problem
+% with nobj=2, nvar=10, x*=sqrt(0.5)
+
+fun   = @(x) DTLZ2(x,2,10,sqrt(0.5));
+con   = [];
+xl    = zeros(1,10);
+xu    = ones(1,10);
+feps  = 1e-4*ones(1,2);
+fu    = [1.5,  1.5];
+maxfn = 5000;
+
+% Optimize with simDIRECT 
+
+output = simDIRECT(fun,con,xl,xu,feps,fu,maxfn);
+
+% Plot the Pareto set in the output space
+
+figure
+color = {'#0072BD','#D95319'};
+axes = gca;
+gray = 0.8*ones(1,3);
+theta = linspace(0,pi/2,101);
+xplot = cos(theta);
+yplot = sin(theta);
+plot(xplot,yplot,'-','Color',gray,'LineWidth',1,...
+    'DisplayName','Pareto front');
+hold on;
+xplot = output.f(~output.isPareto,1);
+yplot = output.f(~output.isPareto,2);
+plot(xplot,yplot,'+','Color',color{1},'MarkerSize',6,'LineWidth',1,...
+    'DisplayName','dominated');
+xplot = output.f(output.isPareto,1);
+yplot = output.f(output.isPareto,2);
+plot(xplot,yplot,'o','Color',color{2},'MarkerSize',10,'LineWidth',1,...
+    'DisplayName','nondominated');
+axes.FontName = 'Times';
+axes.FontSize = 12;
+axes.XTick = 0:0.2:1;
+axes.YTick = 0:0.2:1;
+title('Pareto Set for DTLZ2 Problem (2 obj, 10 var):  Output Space',...
+    'Interpreter','latex','FontSize',18);
+mytitle.Interpreter = 'latex';
+mytitle.FontSize = 18;
+myxlabel = xlabel('$f_1$',...
+                  'Interpreter','latex', 'FontSize', 18);
+myylabel = ylabel('$f_2$',...
+                  'Interpreter','latex', 'FontSize', 18, ...
+                  'Rotation',0,...
+                  'HorizontalAlignment','right');
+axes.PlotBoxAspectRatio = [ 1,1,1 ];
+axes.XLim = [0,1.6];
+axes.YLim = [0,1.6];
+axes.XTick = 0:0.5:1.5;
+axes.YTick = 0:0.5:1.5;
+legend('Interpreter','latex','FontSize',14);
+keyboard
 
 % ************************* Test functions ********************************
 
@@ -355,12 +494,10 @@ function g = con_SRN(x)
     g = [g1,g2];
 end
 
-function f = dtlz2_3obj_8var_sqrthalf(x)
+function f = DTLZ2(x,nobj,nvar,xstar)
     % Source: https://github.com/fcampelo/DEMO/blob/master/Octave-Matlab/DTLZ
     % Some modifications and simplifications were done to the original.
-    nvar = 8;
-    nobj = 3;
-    % Hardwire number of objectives and k (which determines nvar=M+k-1)
+    % Set number of objectives and k (which determines nvar=M+k-1)
     M = nobj;
     k = nvar - M + 1;
     % transpose x because it is a row vector and Deb expects column vector
@@ -368,7 +505,7 @@ function f = dtlz2_3obj_8var_sqrthalf(x)
     % compute the objectives
     n = (M-1) + k; 
     xm = x(n-k+1:end,:); %xm contains the last k variables
-    g = sum((xm - sqrt(0.5)).^2, 1);
+    g = sum((xm - xstar).^2, 1);
     f(1,:) = (1 + g).*prod(cos(pi/2*x(1:M-1,:)),1);
     for ii = 2:M-1
        f(ii,:) = (1 + g) .* prod(cos(pi/2*x(1:M-ii,:)),1) .* ...
@@ -376,4 +513,17 @@ function f = dtlz2_3obj_8var_sqrthalf(x)
     end
     f(M,:) = (1 + g).*sin(pi/2*x(1,:));
     f = f';
+end
+
+function f = LandH2x2(x)
+    a = -sqrt(2)/2;
+    b = -sqrt(4*pi/65);
+    c = -sqrt((90*pi)/112);
+    d = .65;
+    e = 2.8;
+    x1 = x(1);
+    x2 = x(2);
+    f1 =  a*x1 + b*exp( - (x1^2 + x2^2)/d^2 ) + c * exp( - ( x1^2 + (x2+1.5)^2 )/e^2 );
+    f2 = -a*x1 + b*exp( - (x1^2 + x2^2)/d^2 ) + c * exp( - ( x1^2 + (x2+1.5)^2 )/e^2 );
+    f = [f1,f2];    
 end
